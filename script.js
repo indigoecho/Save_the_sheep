@@ -3,12 +3,15 @@ function start() {
 	var ctx = canvas.getContext('2d');
 	var sheep1 = loadImage("sheep1.png");
 	var background = loadImage("grass.png");
+	var banner = loadImage("banner.png");
 		
-	whenAllLoaded([background, sheep1], function() {
+	whenAllLoaded([background, sheep1, banner], function() {
 		tile(ctx, background, 400, 0, 0, 64, 64);	
 		tile(ctx, sheep1, 400, 0, 0, 100, 100);
+		ctx.drawImage(banner, 0, 150);
 	});
 }
+
 function loadImage(src){
 	var image = new Image;
 	image.src = src;
@@ -32,6 +35,7 @@ function whenAllLoaded(images, callback){
 		setTimeout(whenAllLoaded, 1000, images, callback);
 	};
 }
+
 
 function makeSheep(x,y){
 	return {
