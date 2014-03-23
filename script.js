@@ -10,8 +10,10 @@ function start() {
 		ctx.drawImage(banner, 0, 140);
 	});
 	
-	canvas.addEventListener("click", function() {
+	canvas.addEventListener("click", function(event) {
 		draw(ctx, background, sheep1);
+		var coords = relMouseCoords(event, canvas)
+		ctx.fillRect(coords.x, coords.y, 1,1)
 	});
 }
 
