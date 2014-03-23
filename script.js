@@ -29,10 +29,20 @@ function whenAllLoaded(images, callback){
 	if (images.every(isLoaded)) {
 		callback();
 	} else {
-		setTimeout(whenAllLoaded, 1000);
+		setTimeout(whenAllLoaded, 1000, images, callback);
 	};
 }
 
 function makeSheep(x,y){
-	
+	return {
+		status: STATUS_GOOD,
+		time:0,
+		x:x,
+		y:y
+	};
 }
+
+var STATUS_GOOD = 0,
+	STATUS_OK   = 1,
+	STATUS_BAD  = 2,
+	STATUS_GONE = 3;
