@@ -4,12 +4,40 @@ function start() {
 	var sheep1 = loadImage("sheep1.png");
 	var background = loadImage("grass.png");
 	var banner = loadImage("banner.png");
-		
+	
 	whenAllLoaded([background, sheep1, banner], function() {
+		draw(ctx, background, sheep1);
+		ctx.drawImage(banner, 0, 140);
+	});
+	
+	canvas.addEventListener("click", function() {
+		draw(ctx, background, sheep1);
+	});
+}
+
+//Get the coordinates of an event relative to a certain element on the page
+function relMouseCoords(event, element){
+    var totalOffsetX = 0;
+    var totalOffsetY = 0;
+    var canvasX = 0;
+    var canvasY = 0;
+    var currentElement = element;
+
+    do{
+        totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
+        totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
+    }
+    while(currentElement = currentElement.offsetParent)
+
+    canvasX = event.pageX - totalOffsetX;
+    canvasY = event.pageY - totalOffsetY;
+
+    return {x:canvasX, y:canvasY}
+}
+
+function draw(ctx, background, sheep1){
 		tile(ctx, background, 400, 0, 0, 64, 64);	
 		tile(ctx, sheep1, 400, 0, 0, 100, 100);
-		ctx.drawImage(banner, 0, 150);
-	});
 }
 
 function loadImage(src){
@@ -35,7 +63,6 @@ function whenAllLoaded(images, callback){
 		setTimeout(whenAllLoaded, 1000, images, callback);
 	};
 }
-
 
 function makeSheep(x,y){
 	return {
