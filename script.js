@@ -1,19 +1,35 @@
+window.SheepSprites = []
+
 function start() {
 	var canvas = document.getElementById('sheep');
 	var ctx = canvas.getContext('2d');
-	var sheep1 = loadImage("sheep1.png");
 	var background = loadImage("grass.png");
 	var banner = loadImage("banner.png");
 	
-	whenAllLoaded([background, sheep1, banner], function() {
-		draw(ctx, background, sheep1);
+	for (var i = 1; i <= 4; i++) {
+		var str = 'sheep' + i +'.png'
+		SheepSprites.push(loadImage(str))
+	}
+	
+	var sheepArray = []
+	for (var x=0; x < canvas.width; x+=100){
+		for(var y=0; y < canvas.height; y+=100){
+			sheepArray.push(makeSheep(x,y))
+		}
+	}
+
+	whenAllLoaded([background, banner], function() {
+		draw(ctx, background);
 		ctx.drawImage(banner, 0, 140);
 	});
 	
 	canvas.addEventListener("click", function(event) {
-		draw(ctx, background, sheep1);
+		draw(ctx, background);
 		var coords = relMouseCoords(event, canvas)
 		ctx.fillRect(coords.x, coords.y, 1,1)
+		sheepArray.forEach(function(sheep) {
+			drawSheep(ctx, sheep)
+		})
 	});
 }
 
@@ -37,9 +53,12 @@ function relMouseCoords(event, element){
     return {x:canvasX, y:canvasY}
 }
 
-function draw(ctx, background, sheep1){
-		tile(ctx, background, 400, 0, 0, 64, 64);	
-		tile(ctx, sheep1, 400, 0, 0, 100, 100);
+function draw(ctx, background){
+		tile(ctx, background, 400, 64, 64);	
+}
+
+function drawSheep (ctx, sheep){
+	ctx.drawImage(SheepSprites[sheep.status], sheep.x, sheep.y)
 }
 
 function loadImage(src){
@@ -47,9 +66,9 @@ function loadImage(src){
 	image.src = src;
 	return image;
 }
-function tile(ctx, image, canvasSize, startx, starty, deltax, deltay){
-	for(var x=0; x<canvasSize; x+=deltax){
-		for(var y=0; y<canvasSize; y+=deltay){
+function tile(ctx, image, canvasSize, deltax, deltay){
+	for(var x=0; x < canvasSize; x+=deltax){
+		for(var y=0; y < canvasSize; y+=deltay){
 			ctx.drawImage(image, x, y);
 		};
 	};
@@ -69,11 +88,16 @@ function whenAllLoaded(images, callback){
 function makeSheep(x,y){
 	return {
 		status: STATUS_GOOD,
-		time:0,
 		x:x,
 		y:y
 	};
 }
+
+function timeUntilTrans() {
+	return Math.random() + 2
+}
+
+//function setOff ()
 
 var STATUS_GOOD = 0,
 	STATUS_OK   = 1,
