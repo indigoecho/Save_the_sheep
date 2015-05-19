@@ -22,15 +22,35 @@ function start() {
 		draw(ctx, background);
 		ctx.drawImage(banner, 0, 140);
 	});
-	
-	canvas.addEventListener("click", function(event) {
+
+	var started = false
+	canvas.addEventListener("click", function(){
+		if(!started){
+			startGame(ctx, background, sheepArray)
+			started = true
+		}
+	})
+}	
+function startGame(ctx, background, sheepArray){
+	setInterval(function(){
 		draw(ctx, background);
-		var coords = relMouseCoords(event, canvas)
-		ctx.fillRect(coords.x, coords.y, 1,1)
 		sheepArray.forEach(function(sheep) {
 			drawSheep(ctx, sheep)
 		})
-	});
+	}, 33);
+	
+	sheepArray.forEach(function(sheep){
+		var time = timeUntilTrans()
+		setTimeout(function(){
+			sheep.status += 1
+			setTimeout(function(){
+				sheep.status +=1
+				setTimeout(function(){
+					sheep.status +=1
+				}, timeUntilTrans())
+			}, timeUntilTrans())
+		}, time)
+	})
 }
 
 //Get the coordinates of an event relative to a certain element on the page
@@ -94,7 +114,7 @@ function makeSheep(x,y){
 }
 
 function timeUntilTrans() {
-	return Math.random() + 2
+	return (Math.random() + 2) * 1000
 }
 
 //function setOff ()
