@@ -28,14 +28,15 @@ function start() {
 	var started = false
 	canvas.addEventListener("click", function(){
 		if(!started){
-			startGame(ctx, background, sheepArray)
+			startGame(canvas, background, sheepArray)
 			started = true
 		}
 	})
 }	
 
 // Start of the game loop
-function startGame(ctx, background, sheepArray){
+function startGame(canvas, background, sheepArray){
+	var ctx = canvas.getContext('2d')
 	setInterval(function(){
 		draw(ctx, background);
 		sheepArray.forEach(function(sheep) {
@@ -43,7 +44,6 @@ function startGame(ctx, background, sheepArray){
 		})
 	}, 33);
 	function go(){
-		console.log ("hi")
 		var time = timeUntilTrans()
 		setTimeout(function (){
 			var index = selectSheep(sheepArray)
@@ -52,15 +52,31 @@ function startGame(ctx, background, sheepArray){
 		}, time)
 	} 
 	go()
+	canvas.addEventListener('click', function (event){
+		var click = relMouseCoords(event, canvas)
+		sheepArray.forEach(function(sheep, index){
+			if (isClickedOn(click, sheep)){
+				handleEvent({type: "click", data: index}, sheepArray) 	
+			} 
+		})
+	})
 }
+
+function isClickedOn(click, sheep){
+	return Math.abs(sheep.x + 40 - click.x) <= 20 && Math.abs(sheep.y + 40 - click.y) <= 20
+}
+
 
 //
 function handleEvent(event, state){
 	if (event.type == "transition"){
 		var sheep = state[event.data]
 		sheep.status +=1
+	} else if (event.type == "click"){
+		var sheep = state[event.data]
+		if (sheep.status == STATUS_OK || sheep.status == STATUS_BAD) 
+			sheep.status -=1 
 	}
-	
 }
 
 //Select a sheep (which has not already gone) to transition
@@ -144,7 +160,7 @@ function makeSheep(x,y){
 
 //Time until status change
 function timeUntilTrans() {
-	return ((Math.random() * 1000))
+	return Math.random() * 2000
 }
 
 //function setOff ()
